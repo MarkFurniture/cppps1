@@ -13,7 +13,16 @@ C++ implemented dynamic PS1 prompt for bash, inspired by [powerline-shell](https
 $ git clone https://github.com/MarkFurniture/cppps1.git
 ```
 2. Build binary:
+Using script:
 ```
+
+# using build script
+$ cd cppps1
+$ ./bld.sh
+
+# OR
+
+# manually
 $ cd cppps1
 $ mkdir build
 $ g++ -Wall -g -Werror -std=c++11 ps1.cpp segments.cpp -o ./build/cppps1
