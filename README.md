@@ -1,6 +1,6 @@
-# RubyPS1
+# C++ PS1
 
-Ruby implemented dynamic PS1 prompt for bash, inspired by [powerline-shell](https://github.com/b-ryan/powerline-shell).
+C++ implemented dynamic PS1 prompt for bash, inspired by [powerline-shell](https://github.com/b-ryan/powerline-shell).
 
 ###### Why not powerline-shell?
 1. Primarily, pedagogy.
@@ -16,14 +16,13 @@ $ git clone https://github.com/MarkFurniture/cppps1.git
 ```
 $ cd cppps1
 $ mkdir build
-$ g++ -Wall -g -Werror -std=c++11 ps1.cpp segments.cpp -o /build/cppps1
+$ g++ -Wall -g -Werror -std=c++11 ps1.cpp segments.cpp -o ./build/cppps1
 ```
 2. Make sure executable is in $PATH:
 ```
-$ ln -s ./build/cppps1  /usr/local/bin/cppps1
 $ ln -s $(pwd)/build/cppps1 /usr/local/bin/cppps1
 ```
-3. Make sure cppps1 is executable:
+3. Make sure binary is executable:
 ```
 $ chmod +x ./build/cppps1
 ```

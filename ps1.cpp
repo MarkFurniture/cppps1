@@ -47,8 +47,11 @@ std::string PS1::generate(std::string exitCode)
 
 int main(int argc, char **argv)
 {
-	PS1 p("🌀  ");
+	std::string prefix = (argc < 3) ? "" : argv[2];
 	std::string exitCode = (argc < 2) ? "0" : argv[1];
+	
+	// PS1 p("🌀  ");
+	PS1 p(prefix);
 	std::string ps1 = p.generate(exitCode);
 	std::cout << ps1 << std::endl;
 
