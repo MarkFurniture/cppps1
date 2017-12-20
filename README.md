@@ -4,7 +4,7 @@ C++ implemented dynamic PS1 prompt for bash, inspired by [powerline-shell](https
 
 ###### Why not powerline-shell?
 1. Primarily, pedagogy.
-2. I only have need of a subset of powerline-shell's functionality, and wanted to run a performant PS1 prompt without requiring a daemon in the background. Running powerline-shell without a daemon is subject to python's startup time and performs IO that is superfluous to my needs, hence this simplified version. This should be impossible to interrupt with keyboard input while generating prompt.
+2. I only have need of a subset of powerline-shell's functionality, and wanted to run a performant PS1 prompt without requiring a daemon in the background. Running powerline-shell without a daemon is subject to python's startup time and performs IO that is superfluous to my needs, which slows down the prompt generation and makes it possible to interrupt the prompt generation and spit out exception traces to the console, hence this simplified version. This should be impossible to interrupt with keyboard input while generating prompt.
 
 ## Installation:
 
@@ -15,7 +15,6 @@ $ git clone https://github.com/MarkFurniture/cppps1.git
 2. Build binary:
 Using script:
 ```
-
 # using build script
 $ cd cppps1
 $ ./bld.sh
@@ -38,7 +37,9 @@ $ chmod +x ./build/cppps1
 4. Add to ~/.bashrc or ~/.bash_profile:
 ```
 function _update_ps1() {
-    PS1="$(cppps1 $?)"
+    # add your preferred prefix to the prompt, if any
+    CPPPS1_PREFIX=""
+    PS1="$(cppps1 $? $CPPPS1_PREFIX)"
 }
 
 if [ "$TERM" != "linux" ]; then
@@ -51,14 +52,14 @@ $ . ~/.bashrc
 ```
 
 ## Adding segments
-###### Segments.h
+###### segments.h
 1. Your function which will be called by PS1::generate(). You may add other functions but this one MUST have the following signature:
 ```
 std::string yourSegment();
 ```
 2. Any other function signatures of functions you will add to supplement your segment.
 
-###### Segments.cpp
+###### segments.cpp
 1. Your main segment function:
 ```
 std::string yourSegment();
@@ -71,5 +72,5 @@ this->fnMap["yourSegment"] = &Segments::yourSegment;
 ```
 3. Any other functions you have declared in Segments.h.
 
-###### PS1.cpp
+###### ps1.cpp
 1. Modify PS1::getOptions() to include the name of your segment. This should be the key which you used in Segments::fnMap.
