@@ -26,7 +26,7 @@ $ cd cppps1
 $ mkdir build
 $ g++ -Wall -g -Werror -std=c++11 ps1.cpp segments.cpp -o ./build/cppps1
 ```
-2. Make sure executable is in $PATH:
+2. Make sure executable is in `$PATH`:
 ```
 $ ln -s $(pwd)/build/cppps1 /usr/local/bin/cppps1
 ```
@@ -34,7 +34,7 @@ $ ln -s $(pwd)/build/cppps1 /usr/local/bin/cppps1
 ```
 $ chmod +x ./build/cppps1
 ```
-4. Add to ~/.bashrc or ~/.bash_profile:
+4. Add to `~/.bashrc` or `~/.bash_profile`:
 ```
 function _update_ps1() {
     # add your preferred prefix to the prompt, if any
@@ -46,14 +46,14 @@ if [ "$TERM" != "linux" ]; then
     PROMPT_COMMAND="_update_ps1"
 fi
 ```
-5. Source ~/.bashrc or ~/.bash_profile or restart your shell:
+5. Source `~/.bashrc` or `~/.bash_profile` or restart your shell:
 ```
 $ . ~/.bashrc
 ```
 
 ## Adding segments
 ###### segments.h
-1. Your function which will be called by PS1::generate(). You may add other functions but this one MUST have the following signature:
+1. Your function which will be called by `PS1::generate()`. You may add other functions but this one MUST have the following signature:
 ```
 std::string yourSegment();
 ```
@@ -64,20 +64,20 @@ std::string yourSegment();
 ```
 std::string yourSegment();
 ```
-2. Add pointer to your function in Segments::funcMap():
+2. Add pointer to your function in `Segments::funcMap()`:
 ```
 // Remember the pointer type is: std::string (Segments::*fnPtr)()
 // The key will be what you add to the options object to enable/disable your segment.
 this->fnMap["yourSegment"] = &Segments::yourSegment;
 ```
-3. Any other functions you have declared in Segments.h.
+3. Any other functions you have declared in `segments.h`.
 
 ###### ps1.cpp
-1. Modify PS1::getOptions() to include the name of your segment. This should be the key which you used in Segments::fnMap.
+1. Modify `PS1::getOptions()` to include the name of your segment. This should be the key which you used in `Segments::fnMap`.
 
 ## Tips
 ###### Adding colour
-1. You can use Segments::fg() and Segments::bg() to insert colours while building your string. This is the preferred method because it doesn't add overhead and can be used while building each segment without losing performance.
+1. You can use `Segments::fg()` and `Segments::bg()` to insert colours while building your string. This is the preferred method because it doesn't add overhead and can be used while building each segment without losing performance.
 ```
 // segments.cpp
 std::string Segments::yourSegment()
@@ -87,7 +87,7 @@ std::string Segments::yourSegment()
 	return segmentText;
 }
 ```
-2. You can use a template string to add colours to your prompt build your prompt if you want to keep it easier to read while developing it. This will do a regex_replace of all generated colour tokens with actual terminal colour escape sequences. This will add some overhead but the string will be easier to read in its raw format. You can either call this directly in your segment function or add it to ps1.cpp to call it once for the completed string.
+2. You can use a template string to add colours to your prompt build your prompt if you want to keep it easier to read while developing it. This will do a `regex_replace()` of all generated colour tokens with actual terminal colour escape sequences. This will add some overhead but the string will be easier to read in its raw format. You can either call this directly in your segment function or add it to ps1.cpp to call it once for the completed string.
 ```
 // segments.cpp
 std::string Segments::yourSegment()
