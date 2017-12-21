@@ -15,9 +15,10 @@ $ git clone https://github.com/MarkFurniture/cppps1.git
 2. Build binary:
 Using script:
 ```
-# using build script
+# using makefile
 $ cd cppps1
-$ ./bld.sh
+$ make
+$ make install
 
 # OR
 
@@ -52,14 +53,14 @@ $ . ~/.bashrc
 ```
 
 ## Adding segments
-###### segments.h
+###### include/segments.h
 1. Your function which will be called by `PS1::generate()`. You may add other functions but this one MUST have the following signature:
 ```
 std::string yourSegment();
 ```
 2. Any other function signatures of functions you will add to supplement your segment.
 
-###### segments.cpp
+###### src/segments.cpp
 1. Your main segment function:
 ```
 std::string yourSegment();
@@ -72,14 +73,14 @@ this->fnMap["yourSegment"] = &Segments::yourSegment;
 ```
 3. Any other functions you have declared in `segments.h`.
 
-###### ps1.cpp
+###### src/ps1.cpp
 1. Modify `PS1::getOptions()` to include the name of your segment. This should be the key which you used in `Segments::fnMap`.
 
 ## Tips
 ###### Adding colour
 1. You can use `Segments::fg()` and `Segments::bg()` to insert colours while building your string. This is the preferred method because it doesn't add overhead and can be used while building each segment without losing performance.
 ```
-// segments.cpp
+// src/segments.cpp
 std::string Segments::yourSegment()
 {
 	// white text (255) on blue background (31)
@@ -89,7 +90,7 @@ std::string Segments::yourSegment()
 ```
 2. You can use a template string to add colours to your prompt build your prompt if you want to keep it easier to read while developing it. This will do a `regex_replace()` of all generated colour tokens with actual terminal colour escape sequences. This will add some overhead but the string will be easier to read in its raw format. You can either call this directly in your segment function or add it to ps1.cpp to call it once for the completed string.
 ```
-// segments.cpp
+// src/segments.cpp
 std::string Segments::yourSegment()
 {
 	// white text (255) on blue background (31)

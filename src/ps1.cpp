@@ -1,16 +1,7 @@
 #include <iostream>
 #include <vector>
+#include "ps1.h"
 #include "segments.h"
-
-class PS1 {
-private:
-	std::string prefix;
-	std::vector<std::string> getOptions();
-public:
-	std::string generate(std::string exitCode);
-	PS1(std::string prefix);
-	PS1();
-};
 
 PS1::PS1() : PS1::PS1("") {}
 
@@ -40,17 +31,4 @@ std::string PS1::generate(std::string exitCode)
 	ps1 += s.endPrompt();
 
 	return ps1;
-}
-
-
-int main(int argc, char **argv)
-{
-	std::string prefix = (argc < 3) ? "" : argv[2];
-	std::string exitCode = (argc < 2) ? "0" : argv[1];
-
-	PS1 p(prefix);
-	std::string ps1 = p.generate(exitCode);
-	std::cout << ps1 << std::endl;
-
-	return 0;
 }

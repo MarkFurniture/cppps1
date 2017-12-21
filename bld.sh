@@ -7,8 +7,8 @@ if [ "$SRC_DIR" != "$(pwd)" ]; then
 	exit 1
 fi
 
-if [ ! -d build ]; then
-	mkdir build
+if [ ! -d bin ]; then
+	mkdir bin
 fi
 
-g++ -Wall -g -Werror -std=c++11 ps1.cpp segments.cpp -o build/cppps1
+g++ -Wall -g -Werror -std=c++11 -o bin/cppps1 -I include src/*.cpp
