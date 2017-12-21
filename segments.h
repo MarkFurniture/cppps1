@@ -15,8 +15,10 @@ private:
 	bool root;
 
 	std::string colour(std::string fg, std::string bg, std::string txt);
-	std::string default_colour(int where);
-	std::string reset_colour();
+	std::string fg(std::string fg);
+	std::string bg(std::string bg);
+	std::string defaultColour(int where);
+	std::string resetColour();
 	std::string getHomeDir();
 	void funcMap();
 	bool isRoot();
@@ -24,7 +26,7 @@ public:
 	// helper functions
 	std::string callFunc(std::string fn);
 	std::string endPrompt();
-	std::string replace_colours(std::string ps1);
+	std::string replaceColours(std::string ps1);
 
 	// Add segments below
 	std::string username();

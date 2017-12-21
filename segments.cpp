@@ -25,17 +25,27 @@ std::string Segments::colour(std::string fg, std::string bg, std::string txt)
 	return "\\[\\e[38;5;" + fg + "m\\]\\[\\e[48;5;" + bg + "m\\]" + txt + "\\[\\e[48;5;" + bg + "m\\]\\[\\e[38;5;" + fg + "m\\]";
 }
 
-std::string Segments::default_colour(int where)
+std::string Segments::fg(std::string fg)
+{
+	return "\\[\\e[38;5;" + fg + "m\\]";
+}
+
+std::string Segments::bg(std::string bg)
+{
+	return "\\[\\e[48;5;" + bg + "m\\]";
+}
+
+std::string Segments::defaultColour(int where)
 {
 	return (where ? "\\[\\e[39m" : "\\[\\e[49m");
 }
 
-std::string Segments::reset_colour()
+std::string Segments::resetColour()
 {
 	return "\\[\\e[0m\\]";
 }
 
-std::string Segments::replace_colours(std::string ps1)
+std::string Segments::replaceColours(std::string ps1)
 {
 	std::regex fg("\\{f(\\d+)\\}");
 	std::regex bg("\\{b(\\d+)\\}");
@@ -47,7 +57,7 @@ std::string Segments::replace_colours(std::string ps1)
 
 std::string Segments::endPrompt()
 {
-	return this->default_colour(0) + "" + this->reset_colour() + " ";
+	return this->defaultColour(0) + "" + this->resetColour() + " ";
 }
 
 std::string Segments::getHomeDir()
@@ -89,7 +99,7 @@ std::string Segments::username()
 		bg = "204";
 	}
 
-	return "{f" + fg + "}{b" + bg + "} \\u {f" + bg + "}";
+	return this->fg(fg) + this->bg(bg) + " \\u " + this->fg(bg);
 }
 
 std::string Segments::hostname()
@@ -109,7 +119,7 @@ std::string Segments::hostname()
 		bg = "204";
 	}
 
-	return "{f" + fg + "}{b" + bg + "} \\h {f" + bg + "}";
+	return this->fg(fg) + this->bg(bg) + " \\h " + this->fg(bg);
 }
 
 std::string Segments::cwd()
@@ -125,7 +135,7 @@ std::string Segments::cwd()
 	std::regex re("^" + this->getHomeDir());
 	std::string cwdReplaced = std::regex_replace(cwd, re, "~");
 
-	return "{b31}{f255} " + cwdReplaced + " {f31}";
+	return this->bg("31") + "" + this->fg("255") + " " + cwdReplaced + " " + this->fg("31");
 }
 
 std::string Segments::git()
@@ -146,7 +156,7 @@ std::string Segments::git()
 		}
 	}
 
-	return gitStr.length() ? "{b220}{f0} " + gitStr + " {f220}" : "";
+	return gitStr.length() ? this->bg("220") + "" + this->fg("0") + " " + gitStr + " " + this->fg("220") : "";
 }
 
 std::string Segments::exit_status()
@@ -160,7 +170,7 @@ std::string Segments::prompt()
 	std::string prompt = (this->root ? "#" : "$");
 	std::string col = (this->status == "0" ? "240" : "204");
 
-	return "{b" + col + "}{f255} " + prompt + " {f" + col + "}";
+	return this->bg(col) + "" + this->fg("255") + " " + prompt + " " + this->fg(col);
 }
 
 

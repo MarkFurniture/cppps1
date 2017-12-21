@@ -33,15 +33,13 @@ std::string PS1::generate(std::string exitCode)
 	std::vector<std::string> opts = this->getOptions();
 
 	// get data
-	std::string unformatted = this->prefix;
+	std::string ps1 = this->prefix;
 	for (auto const& opt: opts)
-		unformatted += s.callFunc(opt);
+		ps1 += s.callFunc(opt);
 
-	unformatted += s.endPrompt();
+	ps1 += s.endPrompt();
 
-	std::string formatted = s.replace_colours(unformatted);
-
-	return formatted;
+	return ps1;
 }
 
 
@@ -49,8 +47,7 @@ int main(int argc, char **argv)
 {
 	std::string prefix = (argc < 3) ? "" : argv[2];
 	std::string exitCode = (argc < 2) ? "0" : argv[1];
-	
-	// PS1 p("🌀  ");
+
 	PS1 p(prefix);
 	std::string ps1 = p.generate(exitCode);
 	std::cout << ps1 << std::endl;

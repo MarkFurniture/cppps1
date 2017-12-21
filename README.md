@@ -74,3 +74,26 @@ this->fnMap["yourSegment"] = &Segments::yourSegment;
 
 ###### ps1.cpp
 1. Modify PS1::getOptions() to include the name of your segment. This should be the key which you used in Segments::fnMap.
+
+## Tips
+###### Adding colour
+1. You can use Segments::fg() and Segments::bg() to insert colours while building your string. This is the preferred method because it doesn't add overhead and can be used while building each segment without losing performance.
+```
+// segments.cpp
+std::string Segments::yourSegment()
+{
+	// white text (255) on blue background (31)
+	std::string segmentText = this->fg("255") + this->bg("31") + "your text";
+	return segmentText;
+}
+```
+2. You can use a template string to add colours to your prompt build your prompt if you want to keep it easier to read while developing it. This will do a regex_replace of all generated colour tokens with actual terminal colour escape sequences. This will add some overhead but the string will be easier to read in its raw format. You can either call this directly in your segment function or add it to ps1.cpp to call it once for the completed string.
+```
+// segments.cpp
+std::string Segments::yourSegment()
+{
+	// white text (255) on blue background (31)
+	std::string segmentText = "{f255}{b31}your text";
+	return this->replaceColours(segmentText);
+}
+```
