@@ -1,15 +1,19 @@
 CC := g++
 SRCDIR := src
 BUILDDIR := build
+INCLUDEDIR := include
 TARGETDIR := bin
 TARGET := cppps1
 ABSTARGET := $(realpath $(TARGETDIR)/$(TARGET))
 
 SRCEXT := cpp
+HEXT := h
+DEPS := $(shell find $(INCLUDEDIR) -type f -name *.$(HEXT))
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+# OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(INCLUDEDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g -Wall -Werror -std=c++11
-INC := -I include
+INC := -I $(INCLUDEDIR)
 INSTALLDIR := /usr/local/bin
 INSTALLTARGET := cppps1
 
@@ -32,4 +36,3 @@ uninstall:
 clean:
 	@echo " Cleaning..."; 
 	@echo " $(RM) -r $(BUILDDIR) $(TARGETDIR)/$(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
-	@echo " $(RM) $(INSTALLDIR)/$(INSTALLTARGET)"; $(RM) $(INSTALLDIR)/$(INSTALLTARGET)
