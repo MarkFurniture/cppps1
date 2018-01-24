@@ -3,12 +3,14 @@
 
 #include <map>
 
-#define FG 1
-#define BG 0
-
 class Segments {
 private:
 	// member variables
+	static const int FG = 1;
+	static const int BG = 0;
+	static const std::string sep;
+	static const std::string sepThin;
+
 	typedef std::string (Segments::*fnPtr)();
 	std::map<std::string, fnPtr> fnMap;
 	std::string status;

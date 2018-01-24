@@ -8,6 +8,9 @@
 #include <map>
 #include "segments.h"
 
+const std::string Segments::sep = "";
+const std::string Segments::sepThin = "";
+
 Segments::Segments(std::string status)
 {
 	this->status = status;
@@ -57,7 +60,7 @@ std::string Segments::replaceColours(std::string ps1)
 
 std::string Segments::endPrompt()
 {
-	return this->defaultColour(0) + "" + this->resetColour() + " ";
+	return this->defaultColour(0) + this->sep + this->resetColour() + " ";
 }
 
 std::string Segments::getHomeDir()
@@ -135,7 +138,7 @@ std::string Segments::cwd()
 	std::regex re("^" + this->getHomeDir());
 	std::string cwdReplaced = std::regex_replace(cwd, re, "~");
 
-	return this->bg("31") + "" + this->fg("255") + " " + cwdReplaced + " " + this->fg("31");
+	return this->bg("31") + this->sep + this->fg("255") + " " + cwdReplaced + " " + this->fg("31");
 }
 
 std::string Segments::git()
@@ -156,7 +159,7 @@ std::string Segments::git()
 		}
 	}
 
-	return gitStr.length() ? this->bg("220") + "" + this->fg("0") + " " + gitStr + " " + this->fg("220") : "";
+	return gitStr.length() ? this->bg("220") + this->sep + this->fg("0") + " " + gitStr + " " + this->fg("220") : "";
 }
 
 std::string Segments::exit_status()
@@ -170,7 +173,7 @@ std::string Segments::prompt()
 	std::string prompt = (this->root ? "#" : "$");
 	std::string col = (this->status == "0" ? "240" : "204");
 
-	return this->bg(col) + "" + this->fg("255") + " " + prompt + " " + this->fg(col);
+	return this->bg(col) + this->sep + this->fg("255") + " " + prompt + " " + this->fg(col);
 }
 
 
