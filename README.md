@@ -7,7 +7,7 @@ C++ implemented dynamic PS1 prompt for bash, inspired by [powerline-shell](https
 2. I only have need of a subset of powerline-shell's functionality, and wanted to run a performant PS1 prompt without requiring a daemon in the background. Running powerline-shell without a daemon is subject to python's startup time and performs IO that is superfluous to my needs, which slows down the prompt generation and makes it possible to interrupt the prompt generation and spit out exception traces to the console, hence this simplified version. This should be impossible to interrupt with keyboard input while generating prompt.
 
 ###### What does it look like?
-[!Screenshot](cppps1.png)
+![Screenshot](cppps1.png)
 
 ## Installation:
 
