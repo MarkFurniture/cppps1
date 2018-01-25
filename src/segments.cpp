@@ -190,8 +190,8 @@ std::string Segments::git()
 	if (stat(".git", &st) == 0 && S_ISDIR(st.st_mode)) {
 		// get names of local and remote branches
 		std::string delim = ",";
-		std::string localCmd = "git rev-parse --abbrev-ref HEAD";
-		std::string remoteCmd = "git rev-parse --abbrev-ref HEAD@{u}";
+		std::string localCmd = "git rev-parse --abbrev-ref HEAD 2> /dev/null";
+		std::string remoteCmd = "git rev-parse --abbrev-ref HEAD@{u} 2> /dev/null";
 
 		std::string local, remote;
 		if (executeCmd(&local, localCmd, 100)) {
