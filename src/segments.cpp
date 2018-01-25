@@ -8,8 +8,19 @@
 #include <map>
 #include "segments.h"
 
-const std::string Segments::sep = "";
-const std::string Segments::sepThin = "";
+const std::string Segments::sep = ""; // \uE0B0
+const std::string Segments::sepThin = ""; // \uE0B1
+const std::string Segments::upArrow = "↑";
+const std::string Segments::downArrow = "↓";
+const std::string Segments::upArrowBig = "⬆";
+const std::string Segments::downArrowBig = "⬇";
+const std::string Segments::tick = "✓";
+const std::string Segments::tickHeavy = "✔";
+const std::string Segments::cross = "✗";
+const std::string Segments::crossHeavy = "✘";
+const std::string Segments::lock = "";
+const std::string Segments::alt = "⌥";
+const std::string Segments::pencil = "✐";
 
 Segments::Segments(std::string status)
 {
@@ -66,6 +77,26 @@ std::string Segments::endPrompt()
 std::string Segments::getHomeDir()
 {
 	return getenv("HOME");
+}
+
+bool Segments::executeCmd(std::string *outPtr, std::string cmd, int bufSize)
+{
+	FILE *cmd_p = popen(cmd.c_str(), "r");
+
+	if (!cmd_p)
+		return false;
+
+	char *buf;
+	buf = (char*)malloc(bufSize);
+	fgets(buf, sizeof(buf)*bufSize, cmd_p);
+	pclose(cmd_p);
+
+	*outPtr = (std::string)buf;
+	outPtr->erase(std::remove(outPtr->begin(), outPtr->end(), '\n'), outPtr->end());
+
+	free(buf);
+
+	return true;
 }
 
 bool Segments::isRoot()
@@ -134,11 +165,21 @@ std::string Segments::cwd()
 	std::string cwd(buffer);
 	free(buffer);
 
+	bool writable = access(cwd.c_str(), W_OK) == 0;
+	std::string col = writable ? "69" : "60";
+
 	// replace home dir path with ~
 	std::regex re("^" + this->getHomeDir());
 	std::string cwdReplaced = std::regex_replace(cwd, re, "~");
 
-	return this->bg("31") + this->sep + this->fg("255") + " " + cwdReplaced + " " + this->fg("31");
+	// replace slashes with chevrons
+	std::regex slashes("\\/");
+	std::string cwdSeparated = std::regex_replace(cwdReplaced, slashes, this->fg("240") + " " + this->sepThin + " " + this->fg("255"));
+
+	if (cwdReplaced[0] == '/')
+		cwdSeparated = "/" + cwdSeparated;
+
+	return this->bg(col) + this->sep + this->fg("255") + " " + cwdSeparated + " " + this->fg(col);
 }
 
 std::string Segments::git()
@@ -147,19 +188,42 @@ std::string Segments::git()
 	std::string gitStr = "";
 
 	if (stat(".git", &st) == 0 && S_ISDIR(st.st_mode)) {
-		FILE *gitBranch_p = popen("git rev-parse --abbrev-ref HEAD 2> /dev/null", "r");
+		// get names of local and remote branches
+		std::string delim = ",";
+		std::string localCmd = "git rev-parse --abbrev-ref HEAD";
+		std::string remoteCmd = "git rev-parse --abbrev-ref HEAD@{u}";
 
-		if (gitBranch_p) {
-			char *buffer; int bufSize = 100;
-			buffer = (char*) malloc(bufSize);
-			fgets(buffer, sizeof(buffer), gitBranch_p);
-			pclose(gitBranch_p);
-			gitStr = (std::string)buffer;
-			gitStr.erase(std::remove(gitStr.begin(), gitStr.end(), '\n'), gitStr.end());
+		std::string local, remote;
+		if (executeCmd(&local, localCmd, 100)) {
+			// create text for git string
+			gitStr = (std::string)local;
+
+			if (executeCmd(&remote, remoteCmd, 100)) {
+				// get commit counts
+				std::string statusCmd = "git rev-list --left-right --count " + local + "..." + remote;
+				std::string statusStr, ahead, behind;
+
+				if (executeCmd(&statusStr, statusCmd, 20)) {
+					// split commit counts into ahead/behind
+					ahead = statusStr.substr(0, statusStr.find("\t"));
+					statusStr.erase(0, statusStr.find("\t") + 1);
+					behind = statusStr;
+				} else {
+					ahead = "0";
+					behind = "0";
+				}
+				
+				if (ahead.compare("0"))
+					gitStr += " " + ahead + this->upArrow;
+				if (behind.compare("0"))
+					gitStr += " " + behind + this->downArrow;
+			}
 		}
+
+		gitStr = this->bg("220") + this->sep + this->fg("0") + " " + this->alt + " " + gitStr + " " + this->fg("220") : "";
 	}
 
-	return gitStr.length() ? this->bg("220") + this->sep + this->fg("0") + " " + gitStr + " " + this->fg("220") : "";
+	return gitStr;
 }
 
 std::string Segments::exit_status()
