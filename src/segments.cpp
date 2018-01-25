@@ -166,7 +166,7 @@ std::string Segments::cwd()
 	free(buffer);
 
 	bool writable = access(cwd.c_str(), W_OK) == 0;
-	std::string col = writable ? "69" : "60";
+	std::string col = writable ? "69" : "62";
 
 	// replace home dir path with ~
 	std::regex re("^" + this->getHomeDir());
@@ -220,7 +220,7 @@ std::string Segments::git()
 			}
 		}
 
-		gitStr = this->bg("220") + this->sep + this->fg("0") + " " + this->alt + " " + gitStr + " " + this->fg("220") : "";
+		gitStr = this->bg("220") + this->sep + this->fg("0") + " " + this->alt + " " + gitStr + " " + this->fg("220");
 	}
 
 	return gitStr;
