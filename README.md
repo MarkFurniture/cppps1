@@ -11,6 +11,8 @@ C++ implemented dynamic PS1 prompt for bash, inspired by [powerline-shell](https
 
 ## Installation:
 
+Foreword: You'll may need to install a patched font to your terminal emulator in order to view the unicode characters used in this prompt. A good place to look is [powerline-fonts](https://github.com/powerline/fonts).
+
 1. Clone this repo:
 ```
 $ git clone https://github.com/MarkFurniture/cppps1.git
