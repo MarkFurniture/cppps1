@@ -134,7 +134,7 @@ std::string Segments::timestamp()
 	strftime(buf, sizeof(buf), " [%I:%M:%S]", localtime(&hTime));
 
 	// std::string fg = "46", bg = "238";
-	std::string fg = "255", bg = "238";
+	std::string fg = "250", bg = "238";
 
 	return this->fg(fg) + this->bg(bg) + std::string(buf) + " ";
 }
