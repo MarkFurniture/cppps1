@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <map>
+#include <chrono>
+#include <ctime>
 #include "segments.h"
 
 const std::string Segments::sep = ""; // \uE0B0
@@ -115,12 +117,26 @@ std::string Segments::callFunc(std::string fn)
 
 void Segments::funcMap()
 {
+	this->fnMap["timestamp"] = &Segments::timestamp;
 	this->fnMap["username"] = &Segments::username;
 	this->fnMap["hostname"] = &Segments::hostname;
 	this->fnMap["cwd"] = &Segments::cwd;
 	this->fnMap["git"] = &Segments::git;
 	this->fnMap["exit_status"] = &Segments::exit_status;
 	this->fnMap["prompt"] = &Segments::prompt;
+}
+
+std::string Segments::timestamp()
+{
+	char buf[12];
+	auto time = std::chrono::system_clock::now();
+	std::time_t hTime = std::chrono::system_clock::to_time_t(time);
+	strftime(buf, sizeof(buf), " [%I:%M:%S]", localtime(&hTime));
+
+	// std::string fg = "46", bg = "238";
+	std::string fg = "255", bg = "238";
+
+	return this->fg(fg) + this->bg(bg) + std::string(buf) + " ";
 }
 
 std::string Segments::username()

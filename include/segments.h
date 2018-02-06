@@ -22,9 +22,6 @@ private:
 	static const std::string alt; // ⌥
 	static const std::string pencil; //✐
 
-
-
-
 	typedef std::string (Segments::*fnPtr)();
 	std::map<std::string, fnPtr> fnMap;
 	std::string status;
@@ -46,6 +43,7 @@ public:
 	std::string replaceColours(std::string ps1);
 
 	// Add segments below
+	std::string timestamp();
 	std::string username();
 	std::string hostname();
 	std::string cwd();

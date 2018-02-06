@@ -12,7 +12,7 @@ PS1::PS1(std::string prefix)
 
 std::vector<std::string> PS1::getOptions()
 {
-	static const std::string optArr[] = { "username", "hostname", "cwd", "git", "prompt" };
+	static const std::string optArr[] = { "timestamp", "username", "hostname", "cwd", "git", "prompt" };
 	std::vector<std::string> v (optArr, optArr + sizeof(optArr) / sizeof(optArr[0]) );
 
 	return v;
