@@ -20,7 +20,7 @@ std::vector<std::string> PS1::getOptions()
 
 std::string PS1::generate(std::string exitCode)
 {	
-	Segments::Segments s(exitCode);
+	Segments s(exitCode);
 	std::vector<std::string> opts = this->getOptions();
 
 	// get data
