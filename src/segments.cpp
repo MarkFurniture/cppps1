@@ -133,7 +133,6 @@ std::string Segments::timestamp()
 	std::time_t hTime = std::chrono::system_clock::to_time_t(time);
 	strftime(buf, sizeof(buf), " [%I:%M:%S]", localtime(&hTime));
 
-	// std::string fg = "46", bg = "238";
 	std::string fg = "250", bg = "238";
 
 	return this->fg(fg) + this->bg(bg) + std::string(buf) + " ";
