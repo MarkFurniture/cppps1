@@ -2,14 +2,16 @@
 #define __SEGMENTS_H_INCLUDED__
 
 #include <map>
+#include <vector>
+#include <libconfig.h++>
 
 class Segments {
 private:
 	// member variables
 	static const int FG = 1;
 	static const int BG = 0;
-	static const std::string sep;
-	static const std::string sepThin;
+	static const std::string angular;
+	static const std::string angularThin;
 	static const std::string upArrow;
 	static const std::string downArrow;
 	static const std::string upArrowBig; 
@@ -23,19 +25,23 @@ private:
 	static const std::string pencil; //✐
 
 	typedef std::string (Segments::*fnPtr)();
+	libconfig::Config *cfg;
 	std::map<std::string, fnPtr> fnMap;
 	std::string status;
-	bool root;
+	bool cfgPresent;
 
+	bool readConfig(const char* cfgFile);
 	std::string colour(std::string fg, std::string bg, std::string txt);
 	std::string fg(std::string fg);
 	std::string bg(std::string bg);
 	std::string defaultColour(int where);
 	std::string resetColour();
 	std::string getHomeDir();
+	std::string getConf(std::string key, std::string defaultValue);
 	bool executeCmd(std::string *outPtr, std::string cmd, int bufSize);
 	bool isRoot();
 	void funcMap();
+
 public:
 	// helper functions
 	std::string callFunc(std::string fn);
@@ -51,7 +57,7 @@ public:
 	std::string exit_status();
 	std::string prompt();
 
-	Segments(std::string status);
+	Segments(std::string status, libconfig::Config& cfg);
 	~Segments();
 };
 

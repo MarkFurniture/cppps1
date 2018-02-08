@@ -4,6 +4,7 @@ BUILDDIR := build
 INCLUDEDIR := include
 TARGETDIR := bin
 TARGET := cppps1
+LIBS := config++
 ABSTARGET := $(realpath $(TARGETDIR)/$(TARGET))
 
 SRCEXT := cpp
@@ -19,7 +20,7 @@ INSTALLTARGET := cppps1
 
 $(TARGET): $(OBJECTS)
 	@echo "Building..."
-	@echo " $(CC) $^ -o $(TARGETDIR)/$(TARGET)"; $(CC) $^ -o $(TARGETDIR)/$(TARGET)
+	@echo " $(CC) $^ -o $(TARGETDIR)/$(TARGET)"; $(CC) $^ -o $(TARGETDIR)/$(TARGET) -l $(LIBS)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
