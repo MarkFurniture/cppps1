@@ -10,7 +10,8 @@ PS1::PS1(std::string prefix)
 {
 	this->prefix = prefix;
 
-	this->cfgFile = "/Users/mike/src/cpp/ps1/.cppps1";
+	// this->cfgFile = "/Users/mike/src/cpp/ps1/.cppps1";
+	this->cfgFile = (std::string)getenv("HOME") + "/.cppps1";
 	readConfig(this->cfgFile.c_str());
 }
 

@@ -28,7 +28,6 @@ const std::string Segments::pencil = "✐";
 Segments::Segments(std::string status, libconfig::Config& cfg)
 {
 	this->status = status;
-
 	this->cfg = &cfg;
 	
 	// set up fn name -> fn pointer mapping
@@ -240,9 +239,9 @@ std::string Segments::cwd()
 	std::string fg = getConf("segments.cwd.fg", "255");
 	std::string bg = getConf("segments.cwd.bg", "69");
 	std::string shortenHomeDir = getConf("segments.cwd.shorten_home_dir", "1");
-	std::string useSeparator = getConf("segments.cwd.use_separator", "1");
-	std::string dirSeparator = getConf("segments.cwd.dir_separator", this->angularThin);
-	std::string separatorColour = getConf("segments.cwd.separator_color", "240");
+	std::string splitCwd = getConf("segments.cwd.split_cwd", "1");
+	std::string splitCwdSeparator = getConf("segments.cwd.split_cwd_separator", this->angularThin);
+	std::string splitCwdSeparatorColour = getConf("segments.cwd.split_cwd_separator_color", "240");
 
 	// get colours if directory is not writeable
 	if (access(cwd.c_str(), W_OK) != 0) {
@@ -257,25 +256,27 @@ std::string Segments::cwd()
 	}
 
 	// replace slashes with chevrons
-	if (useSeparator == "1") {
+	if (splitCwd == "1") {
 		bool prependRoot = cwd[0] == '/';
 
 		std::regex slashes("\\/");
-		cwd = std::regex_replace(cwd, slashes, this->fg(separatorColour) + " " + dirSeparator + " " + this->fg(fg));
+		cwd = std::regex_replace(cwd, slashes, this->fg(splitCwdSeparatorColour) + " " + splitCwdSeparator + " " + this->fg(fg));
 		
 		// add a slash to cwd if outside home dir
 		if (prependRoot)
 			cwd = "/" + cwd;
 	}
 
-	return this->bg(bg) + this->angular + this->fg(fg) + " " + cwd + " " + this->fg(bg);
+	return this->bg(bg) + sep + this->fg(fg) + " " + cwd + " " + this->fg(bg);
 }
 
 std::string Segments::git()
 {
-	std::string sep = getConf("segments.git.separator", "");
+	std::string sep = getConf("segments.git.separator", this->angular);
 	std::string fg = getConf("segments.git.fg", "0");
 	std::string bg = getConf("segments.git.bg", "220");
+	std::string showLocal = getConf("segments.git.show_local", "1");
+	std::string showRemote = getConf("segments.git.show_remote", "0");
 	std::string showIcon = getConf("segments.git.show_icon", "1");
 	std::string icon = getConf("segments.git.icon", this->alt);
 	std::string iconColor = getConf("segments.git.icon_color", fg);
@@ -296,9 +297,15 @@ std::string Segments::git()
 		std::string local, remote;
 		if (executeCmd(&local, localCmd, 100)) {
 			// create text for git string
-			gitStr = (std::string)local;
+			gitStr = "";
+
+			if (showLocal == "1")
+				gitStr += (std::string)local;
 
 			if (executeCmd(&remote, remoteCmd, 100)) {
+				if (showRemote == "1")
+					gitStr += "[" + (std::string)remote + "]";
+
 				// get commit counts
 				std::string statusCmd = "git rev-list --left-right --count " + local + "..." + remote;
 
@@ -323,7 +330,7 @@ std::string Segments::git()
 			}
 		}
 
-		gitStr = this->bg("220") + this->angular + this->fg("0") + " " + this->alt + " " + gitStr + " " + this->fg("220");
+		gitStr = this->bg(bg) + sep + this->fg(fg) + " " + icon + " " + gitStr + " " + this->fg(bg);
 	}
 
 	return gitStr;
@@ -336,11 +343,21 @@ std::string Segments::exit_status()
 
 std::string Segments::prompt()
 {
-	std::string un = getenv("USER");
-	std::string prompt = (this->isRoot() ? "#" : "$");
-	std::string col = (this->status == "0" ? "240" : "204");
+	std::string sep = getConf("segments.prompt.separator", this->angular);
+	std::string userPrompt = getConf("segments.prompt.user_prompt", "$");
+	std::string rootPrompt = getConf("segments.prompt.root_prompt", "#");
 
-	return this->bg(col) + this->angular + this->fg("255") + " " + prompt + " " + this->fg(col);
+	std::string fg = getConf("segments.prompt.fg", "255");
+	std::string bg = getConf("segments.prompt.bg", "240");
+
+	if (this->status == "1") {
+		fg = getConf("segments.prompt.error.fg", "0");
+		bg = getConf("segments.prompt.error.bg", "204");
+	}
+
+	std::string prompt = (this->isRoot() ? rootPrompt : userPrompt);
+
+	return this->bg(bg) + sep + this->fg(fg) + " " + prompt + " " + this->fg(bg);
 }
 
 
