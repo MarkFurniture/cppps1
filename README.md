@@ -13,11 +13,13 @@ C++ implemented dynamic PS1 prompt for bash, inspired by [powerline-shell](https
 
 Foreword: You'll may need to install a patched font to your terminal emulator in order to view the unicode characters used in this prompt. A good place to look is [powerline-fonts](https://github.com/powerline/fonts).
 
-1. Clone this repo:
+1. Install [libconfig](https://github.com/hyperrealm/libconfig), which is most likely in your distribution's package manager. For OSX users it is available via homebrew.
+
+2. Clone this repo:
 ```
 $ git clone https://github.com/MarkFurniture/cppps1.git
 ```
-2. Build binary:
+3. Build binary:
 Using script:
 ```
 # using makefile
@@ -32,15 +34,15 @@ $ cd cppps1
 $ mkdir build
 $ g++ -Wall -g -Werror -std=c++11 ps1.cpp segments.cpp -o ./build/cppps1
 ```
-2. Make sure executable is in `$PATH`:
+4. Make sure executable is in `$PATH`:
 ```
 $ ln -s $(pwd)/build/cppps1 /usr/local/bin/cppps1
 ```
-3. Make sure binary is executable:
+5. Make sure binary is executable:
 ```
 $ chmod +x ./build/cppps1
 ```
-4. Add to `~/.bashrc` or `~/.bash_profile`:
+6. Add to `~/.bashrc` or `~/.bash_profile`:
 ```
 function _update_ps1() {
     # add your preferred prefix to the prompt, if any
@@ -52,10 +54,15 @@ if [ "$TERM" != "linux" ]; then
     PROMPT_COMMAND="_update_ps1"
 fi
 ```
-5. Source `~/.bashrc` or `~/.bash_profile` or restart your shell:
+7. Source `~/.bashrc` or `~/.bash_profile` or restart your shell:
 ```
 $ . ~/.bashrc
 ```
+
+## Configuration
+cpppps1 uses libconfig for configuration. See [conf/.cppps1.example](conf/.cppps1.example) for a heavily commented example configuration. Currently, the configuration must be located in ~/.cppps1, however specifying the location on the command line will be implemented in the future.
+
+cppps1 will print out a message if there are any errors parsing or applying your configuration file.
 
 ## Adding segments
 ###### include/segments.h
@@ -110,4 +117,44 @@ std::string Segments::yourSegment()
 	std::string segmentText = "{f255}{b31}your text";
 	return this->replaceColours(segmentText);
 }
+```
+
+## Troubleshooting
+###### Configuration errors
+If you have errors related to your config file, you will see one of the following messages:
+```
+// Error:
+[CPPPS1] Setting type exception - [key name]
+
+// Cause:
+// Unable to get the key from your config file. By default cppps1 tries to retrieve a setting and
+// convert it to a string representation for use in your PS1 string. libconfig is type-aware, so
+// this error is likely occurring because you are trying to retrieve a complex data type into a
+// string. Consider using Segments::getSetting() instead of Segments::getStr() if you need to use
+// a structure or array.
+```
+
+```
+// Error:
+[CPPPS1] Setting not found exception - [key name]
+
+// Cause
+// The specified setting doesn't exist in your config file. Check the key name and path.
+```
+
+```
+// Error:
+[CPPPS1] Could not find config file
+
+// Cause:
+// The config file that cppps1 is trying to use doesn't exist. Verify that it is in the intended
+// location.
+```
+
+```
+// Error:
+[CPPPS1] Error parsing config file
+
+// Cause:
+// There is an error in the syntax of your config file and libconfig was unable to parse it.
 ```

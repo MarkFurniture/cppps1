@@ -21,9 +21,9 @@ bool PS1::readConfig(const char* cfgFile)
 		this->cfg.readFile(cfgFile);
 		return true;
 	} catch (libconfig::FileIOException &fioex) {
-		std::cout << "Could not find config file" << std::endl;
+		std::cout << "[CPPPS1] Could not find config file" << std::endl;
 	} catch (libconfig::ParseException &pex) {
-		std::cout << "Error parsing config file" << std::endl;
+		std::cout << "[CPPPS1] Error parsing config file" << std::endl;
 	}
 
 	return false;

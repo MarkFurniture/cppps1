@@ -112,7 +112,7 @@ std::string Segments::callFunc(std::string fn)
 	return (this->*fnMap[fn])();
 }
 
-std::string Segments::getConf(std::string key, std::string defaultValue)
+std::string Segments::getStr(std::string key, std::string defaultValue)
 {
 	const char* confValue;
 	std::string outValue = "";
@@ -143,7 +143,7 @@ std::string Segments::getConf(std::string key, std::string defaultValue)
 					break;
 				}
 				default: {
-					std::cout << "Error in config file (" << key << ")";
+					std::cout << "[CPPPS1] Setting type exception - " << key << std::endl;
 					confValue = "";
 					break;
 				}
@@ -152,9 +152,9 @@ std::string Segments::getConf(std::string key, std::string defaultValue)
 			return confValue;
 		}
 	} catch (const libconfig::SettingNotFoundException &nfex) {
-		std::cout << "Setting not found exception - " << key << std::endl;
+		std::cout << "[CPPPS1] Setting not found exception - " << key << std::endl;
 	} catch (const libconfig::SettingTypeException &stex) {
-		std::cout << "Setting type exception - " << key << std::endl;
+		std::cout << "[CPPPS1] Setting type exception - " << key << std::endl;
 	}
 
 	return defaultValue;
@@ -177,9 +177,9 @@ void Segments::funcMap()
 
 std::string Segments::timestamp()
 {
-	std::string fg = getConf("segments.timestamp.fg", "250");
-	std::string bg = getConf("segments.timestamp.bg", "238");
-	std::string sep = getConf("segments.timestamp.separator", "");
+	std::string fg = getStr("segments.timestamp.fg", "250");
+	std::string bg = getStr("segments.timestamp.bg", "238");
+	std::string sep = getStr("segments.timestamp.separator", "");
 
 	char buf[12];
 	auto time = std::chrono::system_clock::now();
@@ -193,13 +193,13 @@ std::string Segments::username()
 {
 	std::string username = getenv("USER");
 
-	std::string fg = getConf("segments.username.fg", "46");
-	std::string bg = getConf("segments.username.bg", "240");
-	std::string sep = getConf("segments.username.separator", "");
+	std::string fg = getStr("segments.username.fg", "46");
+	std::string bg = getStr("segments.username.bg", "240");
+	std::string sep = getStr("segments.username.separator", "");
 
 	if (this->isRoot()) {
-		fg = getConf("segments.username.root.fg", "255");;
-		bg = getConf("segments.username.root.bg", "204");
+		fg = getStr("segments.username.root.fg", "255");;
+		bg = getStr("segments.username.root.bg", "204");
 	}
 
 	return this->bg(bg) + sep + this->fg(fg) + " \\u " + this->fg(bg);
@@ -207,13 +207,13 @@ std::string Segments::username()
 
 std::string Segments::hostname()
 {
-	std::string fg = getConf("segments.hostname.fg", "46");
-	std::string bg = getConf("segments.hostname.bg", "238");
-	std::string sep = getConf("segments.hostname.separator", "");
+	std::string fg = getStr("segments.hostname.fg", "46");
+	std::string bg = getStr("segments.hostname.bg", "238");
+	std::string sep = getStr("segments.hostname.separator", "");
 
 	if (this->isRoot()) {
-		fg = getConf("segments.hostname.root.fg", "255");
-		bg = getConf("segments.hostname.root.bg", "204");
+		fg = getStr("segments.hostname.root.fg", "255");
+		bg = getStr("segments.hostname.root.bg", "204");
 	}
 
 	char *buffer;
@@ -235,18 +235,18 @@ std::string Segments::cwd()
 	std::string cwd(buffer);
 	free(buffer);
 
-	std::string sep = getConf("segments.cwd.separator", "");
-	std::string fg = getConf("segments.cwd.fg", "255");
-	std::string bg = getConf("segments.cwd.bg", "69");
-	std::string shortenHomeDir = getConf("segments.cwd.shorten_home_dir", "1");
-	std::string splitCwd = getConf("segments.cwd.split_cwd", "1");
-	std::string splitCwdSeparator = getConf("segments.cwd.split_cwd_separator", this->angularThin);
-	std::string splitCwdSeparatorColour = getConf("segments.cwd.split_cwd_separator_color", "240");
+	std::string sep = getStr("segments.cwd.separator", "");
+	std::string fg = getStr("segments.cwd.fg", "255");
+	std::string bg = getStr("segments.cwd.bg", "69");
+	std::string shortenHomeDir = getStr("segments.cwd.shorten_home_dir", "1");
+	std::string splitCwd = getStr("segments.cwd.split_cwd", "1");
+	std::string splitCwdSeparator = getStr("segments.cwd.split_cwd_separator", this->angularThin);
+	std::string splitCwdSeparatorColour = getStr("segments.cwd.split_cwd_separator_color", "240");
 
 	// get colours if directory is not writeable
 	if (access(cwd.c_str(), W_OK) != 0) {
-		fg = getConf("segments.cwd.readonly.fg", "255");
-		bg = getConf("segments.cwd.readonly.bg", "62");
+		fg = getStr("segments.cwd.readonly.fg", "255");
+		bg = getStr("segments.cwd.readonly.bg", "62");
 	}
 
 	// replace home dir path with ~
@@ -272,18 +272,18 @@ std::string Segments::cwd()
 
 std::string Segments::git()
 {
-	std::string sep = getConf("segments.git.separator", this->angular);
-	std::string fg = getConf("segments.git.fg", "0");
-	std::string bg = getConf("segments.git.bg", "220");
-	std::string showLocal = getConf("segments.git.show_local", "1");
-	std::string showRemote = getConf("segments.git.show_remote", "0");
-	std::string showIcon = getConf("segments.git.show_icon", "1");
-	std::string icon = getConf("segments.git.icon", this->alt);
-	std::string iconColor = getConf("segments.git.icon_color", fg);
-	std::string showPending = getConf("segments.git.show_pending", "1");
-	std::string pendingColor = getConf("segments.git.pending_color", fg);
-	std::string pendingPullIcon = getConf("segments.git.pending_pull_icon", this->downArrow);
-	std::string pendingPushIcon = getConf("segments.git.pending_push_icon", this->upArrow);
+	std::string sep = getStr("segments.git.separator", this->angular);
+	std::string fg = getStr("segments.git.fg", "0");
+	std::string bg = getStr("segments.git.bg", "220");
+	std::string showLocal = getStr("segments.git.show_local", "1");
+	std::string showRemote = getStr("segments.git.show_remote", "0");
+	std::string showIcon = getStr("segments.git.show_icon", "1");
+	std::string icon = getStr("segments.git.icon", this->alt);
+	std::string iconColor = getStr("segments.git.icon_color", fg);
+	std::string showPending = getStr("segments.git.show_pending", "1");
+	std::string pendingColor = getStr("segments.git.pending_color", fg);
+	std::string pendingPullIcon = getStr("segments.git.pending_pull_icon", this->downArrow);
+	std::string pendingPushIcon = getStr("segments.git.pending_push_icon", this->upArrow);
 
 	struct stat st;
 	std::string gitStr = "";
@@ -343,16 +343,16 @@ std::string Segments::exit_status()
 
 std::string Segments::prompt()
 {
-	std::string sep = getConf("segments.prompt.separator", this->angular);
-	std::string userPrompt = getConf("segments.prompt.user_prompt", "$");
-	std::string rootPrompt = getConf("segments.prompt.root_prompt", "#");
+	std::string sep = getStr("segments.prompt.separator", this->angular);
+	std::string userPrompt = getStr("segments.prompt.user_prompt", "$");
+	std::string rootPrompt = getStr("segments.prompt.root_prompt", "#");
 
-	std::string fg = getConf("segments.prompt.fg", "255");
-	std::string bg = getConf("segments.prompt.bg", "240");
+	std::string fg = getStr("segments.prompt.fg", "255");
+	std::string bg = getStr("segments.prompt.bg", "240");
 
 	if (this->status == "1") {
-		fg = getConf("segments.prompt.error.fg", "0");
-		bg = getConf("segments.prompt.error.bg", "204");
+		fg = getStr("segments.prompt.error.fg", "0");
+		bg = getStr("segments.prompt.error.bg", "204");
 	}
 
 	std::string prompt = (this->isRoot() ? rootPrompt : userPrompt);

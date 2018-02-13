@@ -37,7 +37,7 @@ private:
 	std::string defaultColour(int where);
 	std::string resetColour();
 	std::string getHomeDir();
-	std::string getConf(std::string key, std::string defaultValue);
+	std::string getStr(std::string key, std::string defaultValue);
 	bool executeCmd(std::string *outPtr, std::string cmd, int bufSize);
 	bool isRoot();
 	void funcMap();
