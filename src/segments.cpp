@@ -240,7 +240,7 @@ std::string Segments::cwd()
 	std::string cwd(buffer);
 	free(buffer);
 
-	std::string sep = getStr("segments.cwd.separator", "");
+	std::string sep = getStr("segments.cwd.separator", this->angular);
 	std::string fg = getStr("segments.cwd.fg", "255");
 	std::string bg = getStr("segments.cwd.bg", "69");
 	std::string shortenHomeDir = getStr("segments.cwd.shorten_home_dir", "1");
