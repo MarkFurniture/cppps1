@@ -1,32 +1,13 @@
-#include <iostream>
 #include <vector>
 #include "ps1.h"
 #include "segments.h"
-#include <libconfig.h++>
 
-PS1::PS1() : PS1::PS1("") {}
+PS1::PS1() : PS1::PS1("", "") {}
 
-PS1::PS1(std::string prefix)
+PS1::PS1(std::string prefix, std::string cfgFile)
 {
 	this->prefix = prefix;
-
-	// this->cfgFile = "/Users/mike/src/cpp/ps1/.cppps1";
-	this->cfgFile = (std::string)getenv("HOME") + "/.cppps1";
-	readConfig(this->cfgFile.c_str());
-}
-
-bool PS1::readConfig(const char* cfgFile)
-{
-	try {
-		this->cfg.readFile(cfgFile);
-		return true;
-	} catch (libconfig::FileIOException &fioex) {
-		std::cout << "[CPPPS1] Could not find config file" << std::endl;
-	} catch (libconfig::ParseException &pex) {
-		std::cout << "[CPPPS1] Error parsing config file" << std::endl;
-	}
-
-	return false;
+	this->cfgFile = cfgFile;
 }
 
 std::vector<std::string> PS1::getOptions()
@@ -39,7 +20,7 @@ std::vector<std::string> PS1::getOptions()
 
 std::string PS1::generate(std::string exitCode)
 {
-	Segments s(exitCode, cfg);
+	Segments s(exitCode, cfgFile);
 	std::vector<std::string> opts = this->getOptions();
 
 	// get data

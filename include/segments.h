@@ -25,7 +25,8 @@ private:
 	static const std::string pencil; //✐
 
 	typedef std::string (Segments::*fnPtr)();
-	libconfig::Config *cfg;
+	std::string cfgFile;
+	libconfig::Config cfg;
 	std::map<std::string, fnPtr> fnMap;
 	std::string status;
 	bool cfgPresent;
@@ -57,7 +58,7 @@ public:
 	std::string exit_status();
 	std::string prompt();
 
-	Segments(std::string status, libconfig::Config& cfg);
+	Segments(std::string status, std::string cfgFile);
 	~Segments();
 };
 

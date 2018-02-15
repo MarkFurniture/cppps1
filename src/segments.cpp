@@ -6,8 +6,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <map>
-#include <chrono>
-#include <ctime>
 #include "segments.h"
 #include <libconfig.h++>
 
@@ -25,11 +23,18 @@ const std::string Segments::lock = "";
 const std::string Segments::alt = "⌥";
 const std::string Segments::pencil = "✐";
 
-Segments::Segments(std::string status, libconfig::Config& cfg)
+Segments::Segments(std::string status, std::string cfgFile)
 {
 	this->status = status;
-	this->cfg = &cfg;
-	
+
+	try {
+		this->cfg.readFile(cfgFile.c_str());
+	} catch (libconfig::FileIOException &fioex) {
+		std::cout << "[CPPPS1] Could not find config file" << std::endl;
+	} catch (libconfig::ParseException &pex) {
+		std::cout << "[CPPPS1] Error parsing config file" << std::endl;
+	}
+
 	// set up fn name -> fn pointer mapping
 	this->funcMap();
 }
@@ -118,27 +123,27 @@ std::string Segments::getStr(std::string key, std::string defaultValue)
 	std::string outValue = "";
 
 	try {
-		if (this->cfg->exists(key)) {
-			const libconfig::Setting &s = this->cfg->lookup(key);
+		if (this->cfg.exists(key)) {
+			const libconfig::Setting &s = this->cfg.lookup(key);
 
 			switch (s.getType()) {
 				case libconfig::Setting::TypeString: {
-					this->cfg->lookupValue(key, confValue);
+					this->cfg.lookupValue(key, confValue);
 					break;
 				}
 				case libconfig::Setting::TypeInt: {
 					int intVal;
-					this->cfg->lookupValue(key, intVal);
+					this->cfg.lookupValue(key, intVal);
 					confValue = std::to_string(intVal).c_str();
 					break;
 				}
 				case libconfig::Setting::TypeFloat: {
-					float floatVal = this->cfg->lookup(key);
+					float floatVal = this->cfg.lookup(key);
 					confValue = std::to_string(floatVal).c_str();
 					break;
 				}
 				case libconfig::Setting::TypeBoolean: {
-				bool boolVal = this->cfg->lookup(key);
+					bool boolVal = this->cfg.lookup(key);
 					confValue = std::to_string(boolVal).c_str();
 					break;
 				}
