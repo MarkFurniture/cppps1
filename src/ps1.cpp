@@ -12,8 +12,8 @@ PS1::PS1(std::string prefix, std::string cfgFile)
 
 std::vector<std::string> PS1::getOptions()
 {
-	static const std::string optArr[] = { "timestamp", "username", "hostname", "cwd", "git", "prompt" };
-	std::vector<std::string> v(optArr, optArr + sizeof(optArr) / sizeof(optArr[0]) );
+	static const std::string optArr[] = {"timestamp", "username", "hostname", "venv", "cwd", "git", "prompt"};
+	std::vector<std::string> v(optArr, optArr + sizeof(optArr) / sizeof(optArr[0]));
 
 	return v;
 }
@@ -25,7 +25,7 @@ std::string PS1::generate(std::string exitCode)
 
 	// get data
 	std::string ps1 = this->prefix;
-	for (auto const& opt: opts)
+	for (auto const &opt : opts)
 		ps1 += s.callFunc(opt);
 
 	ps1 += s.endPrompt();

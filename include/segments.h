@@ -55,6 +55,7 @@ public:
 	std::string hostname();
 	std::string cwd();
 	std::string git();
+	std::string venv();
 	std::string exit_status();
 	std::string prompt();
 
